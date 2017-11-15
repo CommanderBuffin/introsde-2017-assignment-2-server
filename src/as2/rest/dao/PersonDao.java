@@ -1,0 +1,93 @@
+package as2.rest.dao;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Persistence;
+import javax.persistence.Query;
+
+import as2.rest.model.Person;
+
+public enum PersonDao {
+	instance;
+	
+	private EntityManagerFactory emf;
+	  
+	  public EntityManager createEntityManager() {
+	        try {
+	            return emf.createEntityManager();
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	        return null;    
+	    }
+
+	    public void closeConnections(EntityManager em) {
+	        em.close();
+	    }
+
+	    public EntityTransaction getTransaction(EntityManager em) {
+	        return em.getTransaction();
+	    }
+
+	    public EntityManagerFactory getEntityManagerFactory() {
+	        return emf;
+	    }  
+	  
+	  private Map<Long, Person> contentProvider = new HashMap<Long, Person>();
+	  
+	  public Map<Long, Person> getDataProvider() {
+	    return contentProvider;
+	  }
+	  
+	   private PersonDao() {
+	     if(emf!=null)
+	       emf.close();
+	     emf = Persistence.createEntityManagerFactory("Server");
+	     /*Connect();
+	     contentProvider.put(john.getPersonId(), john);*/
+	   }
+	   
+	   public void DropDB() {
+	     Path p = Paths.get("./people.db");
+	     try {
+	      Files.delete(p);
+	    } catch (IOException e) {
+	      // TODO Auto-generated catch block
+	      e.printStackTrace();
+	    }
+	   }
+	   
+	   public Person addPerson(Person p) {
+	     EntityManager em = PersonDao.instance.createEntityManager();
+	     EntityTransaction tx = em.getTransaction();
+	     tx.begin();
+	     em.persist(p);
+	     tx.commit();
+	     PersonDao.instance.closeConnections(em);
+	     return p;
+	   }
+	   
+	   public List<Person> getAll(){
+	     EntityManager em = PersonDao.instance.createEntityManager();
+	     List<Person> list = em.createNamedQuery("Person.findAll", Person.class).getResultList();
+	     PersonDao.instance.closeConnections(em);
+	     return list;
+	   }
+	   
+	   public Person getPersonById(Long id) {
+		   EntityManager em = PersonDao.instance.createEntityManager();
+		   Query query = em.createQuery("SELECT p FROM Person p WHERE p.id=:arg1");
+		   query.setParameter("arg1", id);
+		   Person p = (Person) query.getSingleResult();
+		   return p;
+	   }
+}
