@@ -72,6 +72,9 @@ public enum ActivityTypeDao {
 	     tx.begin();
 	     em.persist(at);
 	     tx.commit();
+
+	     /*em.clear();
+	     em.close();*/
 	     ActivityTypeDao.instance.closeConnections(em);
 	     return at;
 	   }

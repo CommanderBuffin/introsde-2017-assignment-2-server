@@ -6,7 +6,9 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -31,7 +33,7 @@ public class Person implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@Id @GeneratedValue
+	@Id @GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name="person_id")
 	@XmlAttribute
 	private Long id;
@@ -46,7 +48,7 @@ public class Person implements Serializable{
 	private String birthdate;
 	
 	@OneToMany(mappedBy="person", cascade = CascadeType.ALL)
-	@XmlElementWrapper(name="activities",required=false, nillable=true)
+	@XmlElementWrapper(name="activities")
 	@XmlElement(name="activity")
 	private List<Activity> activities;
 

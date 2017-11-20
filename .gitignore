@@ -2,3 +2,5 @@
 /.settings/
 .project
 .classpath
+people.db
+people2.db

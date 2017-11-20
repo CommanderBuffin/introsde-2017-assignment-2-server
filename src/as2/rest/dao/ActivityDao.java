@@ -71,9 +71,19 @@ public enum ActivityDao {
 	     EntityTransaction tx = em.getTransaction();
 	     tx.begin();
 	     em.persist(a);
+	     //em.refresh(a.getPerson());
+	     //em.clear();
 	     tx.commit();
+
+	     /*em.clear();
+	     em.close();*/
 	     ActivityDao.instance.closeConnections(em);
 	     return a;
+	   }
+	   
+	   public Long getNewId() {
+		   EntityManager em = createEntityManager();
+		   return (Long) em.createQuery("select max(a.id) from Activity a").getSingleResult()+1L;
 	   }
 	   
 	   public List<Activity> getAll(){

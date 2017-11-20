@@ -2,10 +2,12 @@ package as2.rest.model;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -28,7 +30,7 @@ public class Activity implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@Id @GeneratedValue
+	@Id @GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name="activity_id")
 	@XmlAttribute
 	private Long id;
@@ -45,7 +47,7 @@ public class Activity implements Serializable{
 	@Column
 	private String place;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="person_id")
 	@XmlTransient
 	private Person person;
@@ -118,11 +120,4 @@ public class Activity implements Serializable{
 			type.getActivities().add(this);
 		}
 	}
-	/*
-	public void setOwner(Employee employee) {
-        this.owner = employee;
-        if (!employee.getPhones().contains(this)) { // warning this may cause performance issues if you have a large data set since this operation is O(n)
-            employee.getPhones().add(this);
-        }
-    }*/
 }

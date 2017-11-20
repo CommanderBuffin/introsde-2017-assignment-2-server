@@ -42,12 +42,6 @@ public enum PersonDao {
 	        return emf;
 	    }  
 	  
-	  private Map<Long, Person> contentProvider = new HashMap<Long, Person>();
-	  
-	  public Map<Long, Person> getDataProvider() {
-	    return contentProvider;
-	  }
-	  
 	   private PersonDao() {
 	     if(emf!=null)
 	       emf.close();
@@ -72,6 +66,8 @@ public enum PersonDao {
 	     tx.begin();
 	     em.persist(p);
 	     tx.commit();
+	     /*em.clear();
+	     em.close();*/
 	     PersonDao.instance.closeConnections(em);
 	     return p;
 	   }
@@ -88,6 +84,35 @@ public enum PersonDao {
 		   Query query = em.createQuery("SELECT p FROM Person p WHERE p.id=:arg1");
 		   query.setParameter("arg1", id);
 		   Person p = (Person) query.getSingleResult();
+		   PersonDao.instance.closeConnections(em);
 		   return p;
+	   }
+	   
+	   public Long getNewId() {
+		   EntityManager em = createEntityManager();
+		   return (Long) em.createQuery("select max(p.id) from Person p").getSingleResult()+1L;
+	   }
+	   
+	   public Person updatePerson(Person p) {
+		   EntityManager em = PersonDao.instance.createEntityManager();
+		     EntityTransaction tx = em.getTransaction();
+		     tx.begin();
+		     Person pm = em.merge(p);
+		     tx.commit();
+		     PersonDao.instance.closeConnections(em);
+		     return pm;
+	   }
+	   
+	   public void removePerson(long id) {
+		   EntityManager em = PersonDao.instance.createEntityManager();
+		   /*Query query = em.createQuery("DELETE FROM Person p WHERE p.id=:arg1");
+		   query.setParameter("arg1", id);
+		    return query.executeUpdate();*/
+		   Person p = em.find(Person.class, id);
+		   EntityTransaction tx = em.getTransaction();
+		   tx.begin();
+		   em.remove(p);
+		   tx.commit();
+		   PersonDao.instance.closeConnections(em);   
 	   }
 }

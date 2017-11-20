@@ -13,4 +13,18 @@
 	    <servlet-name>My JAX-RS Resource</servlet-name>
 	    <url-pattern>/as2/*</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>as2 init</servlet-name>
+		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+		<init-param>
+	        <param-name>jersey.config.server.provider.packages</param-name>
+	    	<param-value>as2.rest.resources.DatabaseResource</param-value>
+	    </init-param>
+	    <load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+	    <servlet-name>My JAX-RS Resource</servlet-name>
+	    <url-pattern>/as2/*</url-pattern>
+	</servlet-mapping>
 </web-app>

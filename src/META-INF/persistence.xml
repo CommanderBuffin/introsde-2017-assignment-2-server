@@ -7,7 +7,7 @@
       <class>as2.rest.model.ActivityType</class>
       <properties>
         <property name="javax.persistence.jdbc.driver" value="org.sqlite.JDBC" />
-        <property name="javax.persistence.jdbc.url" value="jdbc:sqlite:./people.db" />
+        <property name="javax.persistence.jdbc.url" value="jdbc:sqlite:people2.db" />
         <property name="eclipselink.logging.level" value="ALL" />
         <property name="eclipselink.ddl-generation" value="create-tables" />
       </properties>

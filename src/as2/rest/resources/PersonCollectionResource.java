@@ -3,12 +3,20 @@ package as2.rest.resources;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.Response.Status;
 
 import as2.rest.dao.ActivityDao;
 import as2.rest.dao.ActivityTypeDao;
@@ -17,8 +25,15 @@ import as2.rest.model.Activity;
 import as2.rest.model.ActivityType;
 import as2.rest.model.Person;
 
+@Stateless
+@LocalBean
 @Path("person")
 public class PersonCollectionResource {
+	
+	@Context
+	UriInfo uriInfo;
+	@Context
+	Request request;
 	
 	@GET
 	@Path("ok")
@@ -30,106 +45,53 @@ public class PersonCollectionResource {
 	@Consumes({"application/json","application/xml"})
 	@Produces({"application/json","application/xml"})
 	public List<Person> getPeople(){
-		/*List<Person> list = new ArrayList<Person>();
-		Person p = new Person();
-		Activity a = new Activity();
-		a.setId(new Long(1));
-		a.setName("Play PUBG");
-		a.setDescription("Play FPP Squad PUBG");
-		a.setPlace("Home");
-		a.setStartdate("14/11/2017");
-		
-		p.setFirstname("Mattia");
-		p.setLastname("Buffa");
-		p.setBirthdate("24/02/1992");
-		p.setId(new Long(1));
-		
-
-		ActivityType at = new ActivityType();
-		at.setName("Game");
-		List<Activity> aat = new ArrayList<Activity>();
-		aat.add(a);
-		at.setActivities(aat);
-		
-		a.setType(at);
-		
-		a.setPerson(p);
-		ArrayList<Activity> aa = new ArrayList<Activity>();
-		aa.add(a);
-		p.setActivities(aa);
-		
-		list.add(p);*/
-		
 		List<Person> list = PersonDao.instance.getAll();
 		return list;
-		/*JAXBContext context;
-		try {
-			context = JAXBContext.newInstance(Person.class);
-		
-			Marshaller marshaller = context.createMarshaller();
-			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-			marshaller.marshal(p, sw);  
-			r = sw.toString();
+	}
+	
+	@POST
+	@Consumes({"application/json","application/xml"})
+	@Produces({"application/json","application/xml"})
+	public Response createPerson(Person p) {
+		if(p.getId()!=null) {
+			if(PersonDao.instance.getPersonById(p.getId())!=null)
+				return Response.noContent().status(Status.BAD_REQUEST).build();
 		}
-		 catch (JAXBException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				r=e.getMessage();
+		else {
+			Long p_id=PersonDao.instance.getNewId();
+			p.setId(p_id);
+		}
+		
+
+		List<Activity> activities = new ArrayList<Activity>();
+		if(p.getActivities()!=null)
+			activities.addAll(p.getActivities());
+		
+		if(p.getFirstname()==null || p.getLastname()==null || p.getBirthdate()==null)
+			return Response.noContent().status(Status.BAD_REQUEST).build();
+		
+		p.setActivities(new ArrayList<Activity>());
+		PersonDao.instance.addPerson(p);
+
+		for(Activity a : activities) {
+			ActivityType at = ActivityTypeDao.instance.getActivityTypeByName(a.getType().getName());
+			if(at==null) {
+				at = a.getType();
+				at = ActivityTypeDao.instance.addActivityType(at);
 			}
-		return Response.accepted().entity(r).build();*/
+			a.setType(at);
+			Long a_id = ActivityDao.instance.getNewId();
+			a.setId(a_id);
+			a.setPerson(p);
+			Activity ra = ActivityDao.instance.addActivity(a);
+			p.addActivity(ra);
+		}
+		Person rp = PersonDao.instance.updatePerson(p);
+		return Response.status(Status.CREATED).entity(rp).build();
 	}
 	
-	
-	@GET
-	@Path("new")
-	@Consumes({"application/json","application/xml"})
-	@Produces({"application/json","application/xml"})
-	public Person addPerson() {
-		Person p = new Person();
-		p.setFirstname("Mattia");
-		p.setLastname("Buffa");
-		p.setBirthdate("24/02/1992");
-		p.setId(new Long(1));
-		List<Activity> a = new ArrayList<Activity>();
-		p.setActivities(a);
-		
-		Person r = PersonDao.instance.addPerson(p);
-		return r;
-	}
-	
-	@GET
-	@Path("{id}/new")
-	@Consumes({"application/json","application/xml"})
-	@Produces({"application/json","application/xml"})
-	public Person addActivityToPerson(@PathParam("id") Long id) {
-		Person p = PersonDao.instance.getPersonById(id);
-		Activity a = new Activity();
-		a.setId(new Long(4));
-		a.setName("Play PUBG");
-		a.setDescription("Play PUBG Test Server");
-		a.setPlace("Home");
-		a.setStartdate("14/11/2017");
-		a.setPerson(p);
-		
-		ActivityType at = new ActivityType();
-		at.setName("Media");
-		//at.addActivity(a);
-		
-		ActivityType rat = ActivityTypeDao.instance.addActivityType(at);
-		
-		a.setType(rat);
-		
-		Activity ra = ActivityDao.instance.addActivity(a);
-		
-		return PersonDao.instance.getPersonById(id);
-	}
-	
-	@GET
-	@Path("{id}")
-	@Consumes({"application/json","application/xml"})
-	@Produces({"application/json","application/xml"})
-	public Person getPersonById(@PathParam("id") Long id){
-		System.out.println(id);
-		return PersonDao.instance.getPersonById(id);
+	@Path("{personId}")
+	public PersonResource getPerson(@PathParam("personId") Long id) {
+		return new PersonResource(uriInfo,request,id);
 	}
 }
