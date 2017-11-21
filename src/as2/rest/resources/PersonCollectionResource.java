@@ -27,7 +27,7 @@ import as2.rest.model.Person;
 
 @Stateless
 @LocalBean
-@Path("person")
+@Path("/person")
 public class PersonCollectionResource {
 	
 	@Context

@@ -4,3 +4,5 @@
 .classpath
 people.db
 people2.db
+/WebContent/
+server-as2.war

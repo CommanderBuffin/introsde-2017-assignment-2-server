@@ -6,7 +6,7 @@ import javax.ws.rs.Path;
 
 import as2.rest.dao.DatabaseDao;
 
-@Path("db")
+@Path("/db")
 public class DatabaseResource {
 	
 	@GET

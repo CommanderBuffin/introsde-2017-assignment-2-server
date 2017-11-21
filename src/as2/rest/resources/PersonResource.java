@@ -50,7 +50,7 @@ public class PersonResource {
 		Person p = PersonDao.instance.getPersonById(id);
 		if(p==null)
 			Response.noContent().status(Status.NOT_FOUND).build();
-		return Response.status(Status.ACCEPTED).entity(p).build();
+		return Response.status(Status.OK).entity(p).build();
 	}
 	/*@GET
 	@Consumes({"application/json","application/xml"})
@@ -80,7 +80,7 @@ public class PersonResource {
 		}
 
 		PersonDao.instance.updatePerson(r);
-		return Response.status(Status.ACCEPTED).entity(r).build();
+		return Response.status(Status.OK).entity(r).build();
 	}
 	
 	@DELETE

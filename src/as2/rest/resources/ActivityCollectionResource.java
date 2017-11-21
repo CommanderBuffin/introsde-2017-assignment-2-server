@@ -54,12 +54,21 @@ public class ActivityCollectionResource {
 	@GET
 	@Consumes({"application/json","application/xml"})
 	@Produces({"application/json","application/xml"})
-	public Response getPersonActivitiesByType(){
+	public List<Activity> getPersonActivitiesByType(){
 		MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
 		if(uriInfo.getQueryParameters().containsKey("before")&&uriInfo.getQueryParameters().containsKey("after"))
 			return getPersonActivitiesByDateRange(queryParams.getFirst("before"),queryParams.getFirst("after"));
+		/*List<Activity> list = ActivityDao.instance.getPersonActivitiesByType(personId, activity_type);
+		return Response.status(Status.OK).entity(list).build();*/
+		return getListActivity();
+	}
+	
+	@Consumes({"application/json","application/xml"})
+	@Produces({"application/json","application/xml"})
+	private List<Activity> getListActivity() {
 		List<Activity> list = ActivityDao.instance.getPersonActivitiesByType(personId, activity_type);
-		return Response.status(Status.OK).entity(list).build();
+		return list;
+		//return Response.status(Status.OK).entity(p.getActivities()).build();
 	}
 	
 	@Path("{activityId}")
@@ -92,10 +101,10 @@ public class ActivityCollectionResource {
 		return Response.status(Status.CREATED).entity(a).build();
 	}
 	
-	/*@GET
+
 	@Consumes({"application/json","application/xml"})
-	@Produces({"application/json","application/xml"})*/
-	public Response getPersonActivitiesByDateRange(String before, String after) {
+	@Produces({"application/json","application/xml"})
+	public List<Activity> getPersonActivitiesByDateRange(String before, String after) {
 		List<Activity> activities = PersonDao.instance.getPersonById(personId).getActivities();
 		List<Activity> aa = new ArrayList<Activity>();
 		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss.s");
@@ -107,7 +116,7 @@ public class ActivityCollectionResource {
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return Response.noContent().status(Status.BAD_REQUEST).build();
+			return aa;//Response.noContent().status(Status.BAD_REQUEST).build();
 		}
 		for(Activity a : activities)
 		{
@@ -119,10 +128,10 @@ public class ActivityCollectionResource {
 			}
 			catch(ParseException e) {
 				e.printStackTrace();
-				return Response.status(Status.BAD_REQUEST).entity("Activity date parse error").build();
+				return new ArrayList<Activity>();//Response.status(Status.BAD_REQUEST).entity("Activity date parse error").build();
 			}
 		}
-		return Response.status(Status.OK).entity(aa).build();
+		return aa;//Response.status(Status.OK).entity(aa).build();
 	}
 	
 }

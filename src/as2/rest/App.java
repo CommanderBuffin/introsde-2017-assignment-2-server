@@ -4,11 +4,14 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import javax.ws.rs.ApplicationPath;
+
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import as2.rest.resources.PersonCollectionResource;
 
+@ApplicationPath("as2")
 public class App {
 	private static final URI BASE_URI = URI.create("http://localhost:5900/as2/");	
     public static void main(String[] args) throws IllegalArgumentException, IOException, URISyntaxException

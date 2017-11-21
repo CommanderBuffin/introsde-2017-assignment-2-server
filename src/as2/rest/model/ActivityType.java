@@ -1,5 +1,6 @@
 package as2.rest.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -11,13 +12,20 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+@XmlRootElement(name="activity_type")
 @XmlAccessorType(XmlAccessType.FIELD)
 @Entity
 @Table(name="ActivityTypes")
 @NamedQuery(name="ActivityType.findAll", query="SELECT at FROM ActivityType at")
-public class ActivityType {
+public class ActivityType implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@Column(name="activitytype_id")
 	private String name;
