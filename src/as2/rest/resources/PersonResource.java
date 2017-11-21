@@ -49,7 +49,7 @@ public class PersonResource {
 	public Response getPerson() {
 		Person p = PersonDao.instance.getPersonById(id);
 		if(p==null)
-			Response.noContent().status(Status.NOT_FOUND).build();
+			return Response.status(Status.NOT_FOUND).build();
 		return Response.status(Status.OK).entity(p).build();
 	}
 	/*@GET
@@ -68,7 +68,7 @@ public class PersonResource {
 		if(r==null)
 		{
 			//abort
-			Response.noContent().status(Status.NOT_FOUND).build();
+			return Response.status(Status.NOT_FOUND).build();
 		}
 		else {
 			if(p.getFirstname()!=null)

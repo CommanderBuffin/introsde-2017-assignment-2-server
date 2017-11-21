@@ -80,10 +80,13 @@ public enum PersonDao {
 	   }
 	   
 	   public Person getPersonById(Long id) {
+		   Person p = null;
 		   EntityManager em = PersonDao.instance.createEntityManager();
 		   Query query = em.createQuery("SELECT p FROM Person p WHERE p.id=:arg1");
 		   query.setParameter("arg1", id);
-		   Person p = (Person) query.getSingleResult();
+		   try {
+			   p = (Person) query.getSingleResult();
+		   }catch(Exception e) {p=null;}
 		   PersonDao.instance.closeConnections(em);
 		   return p;
 	   }
