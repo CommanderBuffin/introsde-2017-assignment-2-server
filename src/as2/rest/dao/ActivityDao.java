@@ -15,6 +15,8 @@ import javax.persistence.Persistence;
 import javax.persistence.Query;
 
 import as2.rest.model.Activity;
+import as2.rest.model.ActivityType;
+import as2.rest.model.Person;
 
 public enum ActivityDao {
 	instance;
@@ -95,9 +97,38 @@ public enum ActivityDao {
 	   
 	   public Activity getActivityById(Long id) {
 		   EntityManager em = ActivityDao.instance.createEntityManager();
-		   Query query = em.createQuery("SELECT a FROM Activity a WHERE p.id=:arg1");
+		   Query query = em.createQuery("SELECT a FROM Activity a WHERE a.id=:arg1");
 		   query.setParameter("arg1", id);
 		   Activity a = (Activity) query.getSingleResult();
 		   return a;
+	   }
+	   
+	   public List<Activity> getPersonActivitiesByType(Long personId, String type){
+		   EntityManager em = ActivityDao.instance.createEntityManager();
+		   Query query = em.createQuery("SELECT a FROM Activity a WHERE a.person.id=:arg1 AND a.type.name=:arg2");
+		   query.setParameter("arg1", personId);
+		   query.setParameter("arg2", type);
+		   List<Activity> activities = query.getResultList();
+		   return activities;
+	   }
+	   
+	   public Activity getPersonActivitiyWithTypeById(Long personId, String type, Long id){
+		   EntityManager em = ActivityDao.instance.createEntityManager();
+		   Query query = em.createQuery("SELECT distinct(a) FROM Activity a JOIN a.person p JOIN a.type t WHERE p.id=:arg1 AND t.name=:arg2 AND a.id=:arg3");
+		   query.setParameter("arg1", personId);
+		   query.setParameter("arg2", type);
+		   query.setParameter("arg3", id);
+		   Activity activity = (Activity) query.getSingleResult();
+		   return activity;
+	   }
+	   
+	   public Activity updateActivity(Activity a) {
+		   EntityManager em = ActivityDao.instance.createEntityManager();
+		     EntityTransaction tx = em.getTransaction();
+		     tx.begin();
+		     Activity am = em.merge(a);
+		     tx.commit();
+		     ActivityDao.instance.closeConnections(em);
+		     return am;
 	   }
 }

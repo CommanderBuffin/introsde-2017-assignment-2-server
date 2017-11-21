@@ -10,6 +10,8 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
@@ -85,5 +87,10 @@ public class PersonResource {
 	public Response deletePerson() {
 		PersonDao.instance.removePerson(id);
 		return Response.noContent().status(Status.OK).build();
+	}
+	
+	@Path("{activity_type}")
+	public ActivityCollectionResource getPersonActivitiesByType(@PathParam("activity_type") String activity_type) {
+		return new ActivityCollectionResource(uriInfo,request,id,activity_type);
 	}
 }

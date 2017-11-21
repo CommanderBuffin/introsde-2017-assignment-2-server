@@ -101,10 +101,10 @@ public enum DatabaseDao {
 	   }
 	   
 	   public void Init() {
-		   add("1","Mattia","Buffa","24/02/1992","Game","1","Play PUBG","Play PUBG Squadd FPP","Home","15/11/2017T21:30:00.0");
-		   add("2","Linda Marilena","Bertolli","28/01/1994","School","2","Thesis","Explain thesis","Unitn","20/11/2017T09:00:00.0");
-		   add("3","Denis","Gallo","08/04/1993","Media","3","Watch Stream","Watch Buffin4576' stream","Home","15/11/2017T21:30:00.0");
-		   add("4","Davide","Buffa","24/02/1992","Social","4","Facebook","Post things on Facebook","Home","18/11/2017T21:30:00.0");
-		   add("5","Luca","Buffa","24/02/1992","Sport","5","Ruuning","400m run","Stadium","22/11/2017T11:00:00.0"); 
+		   add("1","Mattia","Buffa","24-02-1992","Game","1","Play PUBG","Play PUBG Squadd FPP","Home","15-11-2017 21:30:00.0");
+		   add("2","Linda Marilena","Bertolli","28-01-1994","School","2","Thesis","Explain thesis","Unitn","20-11-2017 09:00:00.0");
+		   add("3","Denis","Gallo","08-04-1993","Media","3","Watch Stream","Watch Buffin4576' stream","Home","15-11-2017 21:30:00.0");
+		   add("4","Davide","Buffa","24-02-1992","Social","4","Facebook","Post things on Facebook","Home","18-11-2017 21:30:00.0");
+		   add("5","Luca","Buffa","24-02-1992","Sport","5","Ruuning","400m run","Stadium","22-11-2017 11:00:00.0"); 
 	   }
 }
