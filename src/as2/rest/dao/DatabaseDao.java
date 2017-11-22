@@ -52,20 +52,16 @@ public enum DatabaseDao {
 	   }
 	   
 	   public void DropDB() {
-			/*Path p = Paths.get("people2.db");
-			try {
-				Files.delete(p);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}*/
-		   
 		   EntityManager em = DatabaseDao.instance.createEntityManager();
-		   Query q = em.createQuery("DELETE p FROM Person p");
-		   Query q2 = em.createQuery("DELETE a FROM Activity a");
-		   Query q3 = em.createQuery("DELETE at FROM ActivityType at");
+		   em.getTransaction().begin();
+		   Query q = em.createQuery("DELETE FROM Person p");
+		   Query q2 = em.createQuery("DELETE FROM Activity a");
+		   Query q3 = em.createQuery("DELETE FROM ActivityType at");
 		   q.executeUpdate();
 		   q3.executeUpdate();
 		   q2.executeUpdate();
+		   em.getTransaction().commit();
+		   em.close();
 	    }
 	   
 	   private void add(String ...values) {
