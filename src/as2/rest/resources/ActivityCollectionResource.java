@@ -63,8 +63,8 @@ public class ActivityCollectionResource {
 		return getListActivity();
 	}
 	
-	@Consumes({"application/json","application/xml"})
-	@Produces({"application/json","application/xml"})
+	/*@Consumes({"application/json","application/xml"})
+	@Produces({"application/json","application/xml"})*/
 	private List<Activity> getListActivity() {
 		List<Activity> list = ActivityDao.instance.getPersonActivitiesByType(personId, activity_type);
 		return list;
@@ -102,8 +102,8 @@ public class ActivityCollectionResource {
 	}
 	
 
-	@Consumes({"application/json","application/xml"})
-	@Produces({"application/json","application/xml"})
+	/*@Consumes({"application/json","application/xml"})
+	@Produces({"application/json","application/xml"})*/
 	public List<Activity> getPersonActivitiesByDateRange(String before, String after) {
 		List<Activity> activities = PersonDao.instance.getPersonById(personId).getActivities();
 		List<Activity> aa = new ArrayList<Activity>();
